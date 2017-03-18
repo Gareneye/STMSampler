@@ -8,6 +8,7 @@ Audio sampler for STM Board.
 
 ## How to run
 Clone, compile project and flash to STM.
+
 Put audio samples on SD Card.
 
 ## Future improvements
