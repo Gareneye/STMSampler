@@ -4,6 +4,8 @@
 void configureAudio(void) {
 	pointer = 0;
 
+	pointer2 = 3000;
+
 	RCC_PLLI2SCmd(ENABLE);
 
 	EVAL_AUDIO_SetAudioInterface(AUDIO_INTERFACE_I2S);
@@ -23,7 +25,17 @@ uint16_t EVAL_AUDIO_GetSampleCallBack(void)
 	else
 		pointer++;
 
-	return AUDIO_SAMPLE[pointer];
+	if(pointer2 > 400000)
+		pointer2 = 3000;
+	else
+		pointer2++;
+
+	float v1 = (float) AUDIO_SAMPLE[pointer];
+	float v2 = (float) AUDIO_SAMPLE[pointer2];
+
+	float v = (v1 + v2);
+
+	return (uint16_t)v;
 }
 
 

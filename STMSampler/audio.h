@@ -7,6 +7,7 @@ uint32_t retVal_Init;
 uint32_t retVal_Play;
 uint32_t retVal_PauseResume;
 uint32_t pointer;
+uint32_t pointer2;
 
 void configureAudio(void);
 
