@@ -2,9 +2,10 @@
 #include "audio_sample.h"
 
 void configureAudio(void) {
-	pointer = 0;
+	samples = NULL;
 
-	pointer2 = 3000;
+	// For tests
+	runSample(createSample(91001));
 
 	RCC_PLLI2SCmd(ENABLE);
 
@@ -14,31 +15,87 @@ void configureAudio(void) {
 
 /*
  *
+ * SAMPLES
+ *
+ */
+
+// TODO: Configure SD Card
+struct SampleNode* createSample(uint32_t size)
+{
+	struct SampleNode* newSample =
+			(struct SampleNode*)malloc(sizeof(struct SampleNode));
+
+	newSample->size = size;
+	newSample->pointer = 0;
+
+	newSample->prev = NULL;
+	newSample->next = NULL;
+
+	return newSample;
+}
+
+void runSample(struct SampleNode* newSample)
+{
+	newSample->next = samples;
+
+	if(samples != NULL)
+		samples->prev = newSample;
+
+	samples = newSample;
+}
+
+uint16_t processSamples(struct SampleNode** targetSample, uint16_t value)
+{
+	if((*targetSample) == NULL)
+		return value;
+
+	struct SampleNode** next = &((*targetSample)->next);
+
+	if((*targetSample)->pointer == (*targetSample)->size)
+	{
+		deleteSample(targetSample);
+	}
+	else
+	{
+		value += AUDIO_SAMPLE[(*targetSample)->pointer];
+		(*targetSample)->pointer++;
+	}
+
+	return processSamples(next, value);
+}
+
+void deleteSample(struct SampleNode** targetSample)
+{
+	if(samples == *targetSample)
+	{
+		samples = (*targetSample)->next;
+	}
+	else
+	{
+		(*targetSample)->prev->next = (*targetSample)->next;
+	}
+
+	if((*targetSample)->next != NULL)
+	{
+		(*targetSample)->next->prev = (*targetSample)->prev;
+	}
+
+	free(*targetSample);
+	*targetSample = NULL;
+}
+
+
+
+/*
+ *
  * CALLBACKS
  *
  */
 
 uint16_t EVAL_AUDIO_GetSampleCallBack(void)
 {
-	if(pointer > 400000)
-		pointer = 0;
-	else
-		pointer++;
-
-	if(pointer2 > 400000)
-		pointer2 = 3000;
-	else
-		pointer2++;
-
-	float v1 = (float) AUDIO_SAMPLE[pointer];
-	float v2 = (float) AUDIO_SAMPLE[pointer2];
-
-	float v = (v1 + v2);
-
-	return (uint16_t)v;
+	return processSamples(&samples, 0x0000);
 }
-
-
 
 void EVAL_AUDIO_TransferComplete_CallBack(uint32_t pBuffer, uint32_t Size) {
 }
