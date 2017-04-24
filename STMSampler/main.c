@@ -4,6 +4,7 @@ int main(void)
 {
 	SystemInit();
 	
+	configureButtons();
 	configureAudio();
 
 	while(1) {}

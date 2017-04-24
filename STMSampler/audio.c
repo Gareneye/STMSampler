@@ -58,6 +58,7 @@ uint16_t processSamples(struct SampleNode** targetSample, uint16_t value)
 	else
 	{
 		value += AUDIO_SAMPLE[(*targetSample)->pointer];
+
 		(*targetSample)->pointer++;
 	}
 
