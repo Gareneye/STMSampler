@@ -11,13 +11,13 @@
 
 #include "audio.h"
 
-#define BUTTONS_PINS GPIO_Pin_0
+#define BUTTONS_PINS GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7
 
 void configureButtons(void);
 
 void EXTI0_IRQHandler(void);
 void TIM4_IRQHandler(void);
 
-int blockedEXTI_0;
+int blockedEXTI[8];
 
 #endif

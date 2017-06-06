@@ -1,25 +1,27 @@
 #ifndef __AUDIO_H
 #define __AUDIO_H
 
-#include "STM32F4-Discovery/stm32f4_discovery_audio_codec.h"
 #include <stdlib.h>
+
+#include "filesystem.h"
+#include "STM32F4-Discovery/stm32f4_discovery_audio_codec.h"
 
 uint32_t retVal_Init;
 uint32_t retVal_Play;
 uint32_t retVal_PauseResume;
 
 struct SampleNode {
-	// TODO: Handler or something?
-	uint32_t size;
-	uint32_t pointer;
+	int pointer;
+	int idSample;
+	int finish;
+
 	struct SampleNode* prev;
 	struct SampleNode* next;
 };
 
 struct SampleNode* samples;
 
-// TODO: Configure SD Card
-struct SampleNode* createSample(uint32_t size);
+struct SampleNode* createSample(int id);
 
 void runSample(struct SampleNode* newSample);
 

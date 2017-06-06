@@ -1,16 +1,15 @@
 #include "audio.h"
-#include "audio_sample.h"
 
 void configureAudio(void) {
 	samples = NULL;
 
 	// For tests
-	runSample(createSample(91001));
+	//runSample(createSample(1));
 
 	RCC_PLLI2SCmd(ENABLE);
 
 	EVAL_AUDIO_SetAudioInterface(AUDIO_INTERFACE_I2S);
-	retVal_Init = EVAL_AUDIO_Init(OUTPUT_DEVICE_HEADPHONE, 70, 44000);
+	retVal_Init = EVAL_AUDIO_Init(OUTPUT_DEVICE_HEADPHONE, 70, 44100);
 }
 
 /*
@@ -19,15 +18,14 @@ void configureAudio(void) {
  *
  */
 
-// TODO: Configure SD Card
-
-struct SampleNode* createSample(uint32_t size)
+struct SampleNode* createSample(int id)
 {
 	struct SampleNode* newSample =
 			(struct SampleNode*)malloc(sizeof(struct SampleNode));
 
-	newSample->size = size;
 	newSample->pointer = 0;
+	newSample->idSample = id;
+	newSample->finish = 0;
 
 	newSample->prev = NULL;
 	newSample->next = NULL;
@@ -52,15 +50,15 @@ uint16_t processSamples(struct SampleNode** targetSample, uint16_t value)
 
 	struct SampleNode** next = &((*targetSample)->next);
 
-	if((*targetSample)->pointer == (*targetSample)->size)
+	if((*targetSample)->finish == 1)
 	{
 		deleteSample(targetSample);
 	}
 	else
 	{
-		value += AUDIO_SAMPLE[(*targetSample)->pointer];
-
-		(*targetSample)->pointer++;
+		//value += AUDIO_SAMPLE[(*targetSample)->pointer];
+		value += getNext(targetSample);
+		//value += 0x1111;
 	}
 
 	return processSamples(next, value);
