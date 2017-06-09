@@ -1,27 +1,48 @@
 #ifndef __AUDIO_H
 #define __AUDIO_H
 
+/*
+ * INCLUDES
+ */
+
 #include <stdlib.h>
 #include "misc.h"
 
-struct SampleNode {
-	int position;
+#include "filesystem.h"
+
+/*
+ * Structures
+ */
+
+struct Sample {
+	FSIZE_t position;
 	int id;
 	int isEnd;
 
-	struct SampleNode* prev;
-	struct SampleNode* next;
+	struct Sample* next;
 };
 
+/*
+ * VARS
+ */
 
-struct SampleNode* samples;
+u16 sample_buffer[2048];
+struct Sample* sampleList;
 
-struct SampleNode* runSample(int id);
 
-uint16_t processSamples();
-
-void deleteSample(struct SampleNode** sample);
+/*
+ * FUNCTIONS
+ */
 
 void configureAudio(void);
+
+void tickAudio();
+
+//struct SampleNode* runSample(int id);
+
+//uint16_t processSamples();
+
+//void deleteSample(struct SampleNode** sample);
+
 
 #endif /* __AUDIO_H */
