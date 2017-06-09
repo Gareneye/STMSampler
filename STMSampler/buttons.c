@@ -431,7 +431,7 @@ void EXTI0_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line0) != RESET) {
 
 		if (blockedEXTI[0] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)) {
-			runSample(createSample(1));
+			//runSample(createSample(1));
 
 			blockedEXTI[0] = 1;
 			TIM_Cmd(TIM2, ENABLE);
@@ -445,7 +445,7 @@ void EXTI1_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line1) != RESET) {
 
 		if (blockedEXTI[1] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1)) {
-			runSample(createSample(2));
+			//runSample(createSample(2));
 
 			blockedEXTI[1] = 1;
 			TIM_Cmd(TIM3, ENABLE);
@@ -459,7 +459,7 @@ void EXTI2_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line2) != RESET) {
 
 		if (blockedEXTI[2] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_2)) {
-			runSample(createSample(3));
+			//runSample(createSample(3));
 
 			blockedEXTI[2] = 1;
 			TIM_Cmd(TIM4, ENABLE);
@@ -473,7 +473,7 @@ void EXTI3_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line3) != RESET) {
 
 		if (blockedEXTI[3] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_3)) {
-			runSample(createSample(4));
+			//runSample(createSample(4));
 
 			blockedEXTI[3] = 1;
 			TIM_Cmd(TIM5, ENABLE);
@@ -487,7 +487,7 @@ void EXTI4_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line4) != RESET) {
 
 		if (blockedEXTI[4] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4)) {
-			runSample(createSample(5));
+			//runSample(createSample(5));
 
 			blockedEXTI[4] = 1;
 			TIM_Cmd(TIM9, ENABLE);
@@ -503,7 +503,7 @@ void EXTI9_5_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line5) != RESET) {
 
 		if (blockedEXTI[5] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_5)) {
-			runSample(createSample(6));
+			//runSample(createSample(6));
 
 			blockedEXTI[5] = 1;
 			TIM_Cmd(TIM10, ENABLE);
@@ -516,7 +516,7 @@ void EXTI9_5_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
 
 		if (blockedEXTI[6] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_6)) {
-			runSample(createSample(7));
+			//runSample(createSample(7));
 
 			blockedEXTI[6] = 1;
 			TIM_Cmd(TIM11, ENABLE);
@@ -529,7 +529,7 @@ void EXTI9_5_IRQHandler(void) {
 	if (EXTI_GetITStatus(EXTI_Line7) != RESET) {
 
 		if (blockedEXTI[7] == 0 && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7)) {
-			runSample(createSample(8));
+			//runSample(createSample(8));
 
 			blockedEXTI[7] = 1;
 			TIM_Cmd(TIM12, ENABLE);
