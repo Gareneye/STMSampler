@@ -3897,7 +3897,7 @@ FRESULT f_lseek (
 		if (ofs == CREATE_LINKMAP) {	/* Create CLMT */
 			tbl = fp->cltbl;
 			tlen = *tbl++; ulen = 2;	/* Given table size and required table size */
-			cl = fp->sclust;			/* Top of the chain */
+			cl = fp->obj.sclust;		/* Top of the chain */
 			if (cl) {
 				do {
 					/* Get a fragment */
@@ -3920,9 +3920,7 @@ FRESULT f_lseek (
 				res = FR_NOT_ENOUGH_CORE;	/* Given table size is smaller than required */
 			}
 		} else {						/* Fast seek */
-			if (ofs > fp->fsize) {		/* Clip offset at the file size */
-				ofs = fp->fsize;
-			}
+			if (ofs > fp->obj.objsize) ofs = fp->obj.objsize;	/* Clip offset at the file size */
 			fp->fptr = ofs;				/* Set file pointer */
 			if (ofs) {
 				fp->clust = clmt_clust(fp, ofs - 1);

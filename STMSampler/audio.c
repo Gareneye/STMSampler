@@ -29,10 +29,15 @@ void runSample(int id)
 	newSample->position = 0;
 	newSample->id = id;
 	newSample->isEnd = 0;
+
+	newSample->prev = NULL;
 	newSample->next = NULL;
 
 	if(sampleList != NULL)
+	{
 		newSample->next = sampleList;
+		sampleList->prev = newSample;
+	}
 
 	sampleList = newSample;
 }
@@ -40,6 +45,8 @@ void runSample(int id)
 
 void tickAudio()
 {
+	loadSample(&sampleList);
+
 	/*
 	 * Wait for First half
 	 */
@@ -49,7 +56,7 @@ void tickAudio()
 		it_status = DMA_GetFlagStatus(DMA1_Stream5, DMA_FLAG_HTIF5);
 	}
 
-	processSamples(FILL_FIRST_HALF);	// First half
+	applySample(FILL_FIRST_HALF); // First half
 
 	DMA_ClearFlag(DMA1_Stream5, DMA_FLAG_HTIF5);
 
@@ -57,32 +64,54 @@ void tickAudio()
 	 * Wait for Second half
 	 */
 
+
 	it_status = RESET;
 	while (it_status == RESET) {
 		it_status = DMA_GetFlagStatus(DMA1_Stream5, DMA_FLAG_TCIF5);
 	}
 
-	processSamples(FILL_SECOND_HALF);	// Second half
+	applySample(FILL_SECOND_HALF); // First half
 
 	DMA_ClearFlag(DMA1_Stream5, DMA_FLAG_TCIF5);
+
 
 	/*
 	 * Finished sampled collector
 	 */
 
-	//todo
+	utilizeSamples();
 }
 
 
-void processSamples(uint32_t portionFlag)
+void utilizeSamples()
 {
-	struct Sample** target = &sampleList;
+	struct Sample** head = &sampleList;
 
-	while(*target != NULL)
+	if((*head) == NULL)
+		return;
+
+	while((*head) != NULL)
 	{
-		applySample(target, portionFlag);
+		if((*head)->isEnd)
+		{
+			if((*head)->prev != NULL)
+			{
+				(*head)->prev->next = (*head)->next;
+			}
 
-		target = &((*target)->next);
+			if((*head)->next != NULL)
+			{
+				(*head)->next->prev = (*head)->prev;
+			}
+
+			struct Sample* toDel = *head;
+			head = &((*head)->next);
+			free(toDel);
+		}
+		else
+		{
+			head = &((*head)->next);
+		}
 	}
 }
 

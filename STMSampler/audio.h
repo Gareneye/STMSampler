@@ -9,6 +9,7 @@
 #include "misc.h"
 
 #include "filesystem.h"
+#include "diodes.h"
 
 /*
  * Structures
@@ -16,9 +17,11 @@
 
 struct Sample {
 	FSIZE_t position;
+	//int position;
 	int id;
 	int isEnd;
 
+	struct Sample* prev;
 	struct Sample* next;
 };
 
@@ -26,7 +29,6 @@ struct Sample {
  * VARS
  */
 
-u16 sample_buffer[2048];
 struct Sample* sampleList;
 
 
@@ -38,11 +40,9 @@ void configureAudio(void);
 
 void tickAudio();
 
-//struct SampleNode* runSample(int id);
+void runSample(int id);
 
-//uint16_t processSamples();
-
-//void deleteSample(struct SampleNode** sample);
+u16 addSamples(int i);
 
 
 #endif /* __AUDIO_H */

@@ -47,18 +47,9 @@ void closeFiles()
 }
 
 
-#define sample (*targetSample)
-void applySample(struct Sample** targetSample, uint32_t portionFlag)
+void applySample(uint32_t portionFlag)
 {
-	FIL* targetFile = &(file[sample->id - 1]);
 	int bufferPointer;
-	UINT read_bytes;
-
-	// skip 44 bytes in .wav
-	if(sample->position < 44)
-		sample->position = 44;
-
-	fresult = f_lseek(targetFile, sample->position);
 
 	switch(portionFlag)
 	{
@@ -70,13 +61,32 @@ void applySample(struct Sample** targetSample, uint32_t portionFlag)
 			break;
 	}
 
-	fresult = f_read(targetFile, &sample_buffer[bufferPointer], 1024 * 2, &read_bytes);
+	memcpy(&(sample_buffer[bufferPointer]), &(cache[bufferPointer]), (BUFFER_SIZE/2) * 2);
+}
 
-	if (fresult != FR_OK || read_bytes < 1024 * 2) {
-		sample->isEnd = 1;
+#define sample (*targetSample)
+void loadSample(struct Sample** targetSample)
+{
+	if(!sample)
+		return;
+
+	FIL* targetFile = &(file[sample->id - 1]);
+	UINT read_bytes;
+
+	// skip 44 bytes in .wav
+	if(sample->position < 44)
+		sample->position = 44;
+
+	fresult = f_lseek(targetFile, sample->position);
+	fresult = f_read(targetFile, cache, BUFFER_SIZE * 2, &read_bytes);
+
+	if (fresult != FR_OK || read_bytes < BUFFER_SIZE * 2) {
+			sample->isEnd = 1;
 	}
 
-	sample->position = targetFile->fptr;
+	sample->position += read_bytes;
+
+	//loadSample(&sample->next);
 }
 
 /*
