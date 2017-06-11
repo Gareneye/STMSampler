@@ -67,26 +67,19 @@ void applySample(uint32_t portionFlag)
 #define sample (*targetSample)
 void loadSample(struct Sample** targetSample)
 {
-	if(!sample)
-		return;
+	memset(cache, 0x0000, BUFFER_SIZE * 2);
 
 	FIL* targetFile = &(file[sample->id - 1]);
 	UINT read_bytes;
-
-	// skip 44 bytes in .wav
-	if(sample->position < 44)
-		sample->position = 44;
 
 	fresult = f_lseek(targetFile, sample->position);
 	fresult = f_read(targetFile, cache, BUFFER_SIZE * 2, &read_bytes);
 
 	if (fresult != FR_OK || read_bytes < BUFFER_SIZE * 2) {
-			sample->isEnd = 1;
+		finishSample();
 	}
 
 	sample->position += read_bytes;
-
-	//loadSample(&sample->next);
 }
 
 /*

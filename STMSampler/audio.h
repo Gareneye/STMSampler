@@ -17,12 +17,7 @@
 
 struct Sample {
 	FSIZE_t position;
-	//int position;
 	int id;
-	int isEnd;
-
-	struct Sample* prev;
-	struct Sample* next;
 };
 
 /*
@@ -42,7 +37,7 @@ void tickAudio();
 
 void runSample(int id);
 
-u16 addSamples(int i);
+void finishSample();
 
 
 #endif /* __AUDIO_H */

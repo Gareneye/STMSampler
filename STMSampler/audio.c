@@ -1,6 +1,9 @@
 #include "audio.h"
 
 volatile ITStatus it_status;
+int end = 0;
+int newId = 0;
+int reset = 0;
 
 /*
  * Init audio
@@ -15,36 +18,36 @@ void configureAudio(void) {
 	init_DMA_M2P();
 
 	// Sound Volume 0x0000 - 0xFFFF
-	Codec_VolumeCtrl(0x9999);
-
+	Codec_VolumeCtrl(0xFFFF);
 
 	// DEBUG
+	sampleList = (struct Sample*) malloc(sizeof(struct Sample));
 	runSample(1);
-
 }
 
 void runSample(int id)
 {
-	struct Sample* newSample = (struct Sample*) malloc(sizeof(struct Sample));
-	newSample->position = 0;
-	newSample->id = id;
-	newSample->isEnd = 0;
-
-	newSample->prev = NULL;
-	newSample->next = NULL;
-
-	if(sampleList != NULL)
-	{
-		newSample->next = sampleList;
-		sampleList->prev = newSample;
-	}
-
-	sampleList = newSample;
+	newId = id;
+	reset = 1;
+	end = 0;
 }
 
 
 void tickAudio()
 {
+	if(end == 1)
+	{
+		return;
+	}
+
+	if(reset == 1)
+	{
+		sampleList->position = 44;
+		sampleList->id = newId;
+		reset = 0;
+	}
+
+
 	loadSample(&sampleList);
 
 	/*
@@ -73,47 +76,13 @@ void tickAudio()
 	applySample(FILL_SECOND_HALF); // First half
 
 	DMA_ClearFlag(DMA1_Stream5, DMA_FLAG_TCIF5);
-
-
-	/*
-	 * Finished sampled collector
-	 */
-
-	utilizeSamples();
 }
 
-
-void utilizeSamples()
+void finishSample()
 {
-	struct Sample** head = &sampleList;
-
-	if((*head) == NULL)
-		return;
-
-	while((*head) != NULL)
-	{
-		if((*head)->isEnd)
-		{
-			if((*head)->prev != NULL)
-			{
-				(*head)->prev->next = (*head)->next;
-			}
-
-			if((*head)->next != NULL)
-			{
-				(*head)->next->prev = (*head)->prev;
-			}
-
-			struct Sample* toDel = *head;
-			head = &((*head)->next);
-			free(toDel);
-		}
-		else
-		{
-			head = &((*head)->next);
-		}
-	}
+	end = 1;
 }
+
 
 /*
  * Init DMA
